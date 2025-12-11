@@ -1,9 +1,9 @@
 PRINT '=========================================';
-PRINT 'ЭТАП 1: ПОДГОТОВКА И ОБРАБОТКА ДАННЫХ';
+PRINT 'Р­РўРђРџ 1: РџРћР”Р“РћРўРћР’РљРђ Р РћР‘Р РђР‘РћРўРљРђ Р”РђРќРќР«РҐ';
 PRINT '=========================================';
 PRINT '';
 
--- ЭТАП 1: Подготовка данных
+-- Р­РўРђРџ 1: РџРѕРґРіРѕС‚РѕРІРєР° РґР°РЅРЅС‹С…
 WITH BaseData AS (
     SELECT 
         o.order_id,
@@ -14,10 +14,10 @@ WITH BaseData AS (
         w.region,
         p.product_name,
         CASE 
-            WHEN p.product_name LIKE '%Ноутбук%' THEN 'Электроника'
-            WHEN p.product_name LIKE '%Смартфон%' THEN 'Гаджеты'
-            WHEN p.product_name LIKE '%Планшет%' THEN 'Портативные устройства'
-            ELSE 'Прочее оборудование'
+            WHEN p.product_name LIKE '%РќРѕСѓС‚Р±СѓРє%' THEN 'Р­Р»РµРєС‚СЂРѕРЅРёРєР°'
+            WHEN p.product_name LIKE '%РЎРјР°СЂС‚С„РѕРЅ%' THEN 'Р“Р°РґР¶РµС‚С‹'
+            WHEN p.product_name LIKE '%РџР»Р°РЅС€РµС‚%' THEN 'РџРѕСЂС‚Р°С‚РёРІРЅС‹Рµ СѓСЃС‚СЂРѕР№СЃС‚РІР°'
+            ELSE 'РџСЂРѕС‡РµРµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ'
         END as product_category
     FROM Orders o
     JOIN Warehouses w ON o.warehouse_id = w.warehouse_id
@@ -26,9 +26,9 @@ WITH BaseData AS (
       AND o.order_date < GETDATE()
 )
 
--- Вывод подготовленных данных
+-- Р’С‹РІРѕРґ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹С… РґР°РЅРЅС‹С…
 SELECT TOP 10
-    'Пример обработанных данных' as info,
+    'РџСЂРёРјРµСЂ РѕР±СЂР°Р±РѕС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С…' as info,
     region,
     warehouse_name,
     product_name,
@@ -40,11 +40,11 @@ GO
 
 PRINT '';
 PRINT '=========================================';
-PRINT 'ЭТАП 2: АНАЛИЗ РЕГИОНАЛЬНОЙ ЭФФЕКТИВНОСТИ';
+PRINT 'Р­РўРђРџ 2: РђРќРђР›РР— Р Р•Р“РРћРќРђР›Р¬РќРћР™ Р­Р¤Р¤Р•РљРўРР’РќРћРЎРўР';
 PRINT '=========================================';
 PRINT '';
 
--- ЭТАП 2: Региональный анализ
+-- Р­РўРђРџ 2: Р РµРіРёРѕРЅР°Р»СЊРЅС‹Р№ Р°РЅР°Р»РёР·
 WITH RegionAnalysis AS (
     SELECT 
         w.region,
@@ -60,7 +60,7 @@ WITH RegionAnalysis AS (
 )
 
 SELECT 
-    'Региональная эффективность' as analysis_type,
+    'Р РµРіРёРѕРЅР°Р»СЊРЅР°СЏ СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ' as analysis_type,
     region,
     warehouse_count,
     total_orders,
@@ -69,10 +69,10 @@ SELECT
     rank_by_volume,
     CASE 
         WHEN orders_per_warehouse > (SELECT AVG(orders_per_warehouse) FROM RegionAnalysis) * 1.3 
-            THEN 'Высокая эффективность - рассмотреть расширение'
+            THEN 'Р’С‹СЃРѕРєР°СЏ СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ - СЂР°СЃСЃРјРѕС‚СЂРµС‚СЊ СЂР°СЃС€РёСЂРµРЅРёРµ'
         WHEN orders_per_warehouse < (SELECT AVG(orders_per_warehouse) FROM RegionAnalysis) * 0.7 
-            THEN 'Низкая эффективность - оптимизировать'
-        ELSE 'Средняя эффективность'
+            THEN 'РќРёР·РєР°СЏ СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ - РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ'
+        ELSE 'РЎСЂРµРґРЅСЏСЏ СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ'
     END as recommendation
 FROM RegionAnalysis
 ORDER BY orders_per_warehouse DESC;
@@ -80,20 +80,20 @@ GO
 
 PRINT '';
 PRINT '=========================================';
-PRINT 'ЭТАП 3: АНАЛИЗ ТОВАРНОГО ПОРТФЕЛЯ';
+PRINT 'Р­РўРђРџ 3: РђРќРђР›РР— РўРћР’РђР РќРћР“Рћ РџРћР РўР¤Р•Р›РЇ';
 PRINT '=========================================';
 PRINT '';
 
--- ЭТАП 3: Товарный анализ
+-- Р­РўРђРџ 3: РўРѕРІР°СЂРЅС‹Р№ Р°РЅР°Р»РёР·
 WITH ProductAnalysis AS (
     SELECT 
         p.product_id,
         p.product_name,
         CASE 
-            WHEN p.product_name LIKE '%Ноутбук%' THEN 'Электроника'
-            WHEN p.product_name LIKE '%Смартфон%' THEN 'Гаджеты'
-            WHEN p.product_name LIKE '%Планшет%' THEN 'Портативные устройства'
-            ELSE 'Прочее оборудование'
+            WHEN p.product_name LIKE '%РќРѕСѓС‚Р±СѓРє%' THEN 'Р­Р»РµРєС‚СЂРѕРЅРёРєР°'
+            WHEN p.product_name LIKE '%РЎРјР°СЂС‚С„РѕРЅ%' THEN 'Р“Р°РґР¶РµС‚С‹'
+            WHEN p.product_name LIKE '%РџР»Р°РЅС€РµС‚%' THEN 'РџРѕСЂС‚Р°С‚РёРІРЅС‹Рµ СѓСЃС‚СЂРѕР№СЃС‚РІР°'
+            ELSE 'РџСЂРѕС‡РµРµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ'
         END as product_category,
         COUNT(o.order_id) as total_orders,
         COUNT(DISTINCT w.region) as regions_covered,
@@ -107,15 +107,15 @@ WITH ProductAnalysis AS (
 )
 
 SELECT TOP 15
-    'ABC-анализ товаров' as analysis_type,
+    'ABC-Р°РЅР°Р»РёР· С‚РѕРІР°СЂРѕРІ' as analysis_type,
     product_name,
     product_category,
     total_orders,
     regions_covered,
     CASE 
-        WHEN cumulative_orders <= grand_total_orders * 0.7 THEN 'A - Ключевые товары'
-        WHEN cumulative_orders <= grand_total_orders * 0.9 THEN 'B - Стандартные товары'
-        ELSE 'C - Нишевые товары'
+        WHEN cumulative_orders <= grand_total_orders * 0.7 THEN 'A - РљР»СЋС‡РµРІС‹Рµ С‚РѕРІР°СЂС‹'
+        WHEN cumulative_orders <= grand_total_orders * 0.9 THEN 'B - РЎС‚Р°РЅРґР°СЂС‚РЅС‹Рµ С‚РѕРІР°СЂС‹'
+        ELSE 'C - РќРёС€РµРІС‹Рµ С‚РѕРІР°СЂС‹'
     END as abc_category,
     RANK() OVER (ORDER BY total_orders DESC) as popularity_rank
 FROM ProductAnalysis
@@ -124,11 +124,11 @@ GO
 
 PRINT '';
 PRINT '=========================================';
-PRINT 'ЭТАП 4: ВРЕМЕННОЙ АНАЛИЗ И СЕЗОННОСТЬ';
+PRINT 'Р­РўРђРџ 4: Р’Р Р•РњР•РќРќРћР™ РђРќРђР›РР— Р РЎР•Р—РћРќРќРћРЎРўР¬';
 PRINT '=========================================';
 PRINT '';
 
--- ЭТАП 4: Временной анализ
+-- Р­РўРђРџ 4: Р’СЂРµРјРµРЅРЅРѕР№ Р°РЅР°Р»РёР·
 WITH TimeAnalysis AS (
     SELECT 
         w.region,
@@ -147,7 +147,7 @@ WITH TimeAnalysis AS (
 )
 
 SELECT 
-    'Динамика продаж по месяцам' as analysis_type,
+    'Р”РёРЅР°РјРёРєР° РїСЂРѕРґР°Р¶ РїРѕ РјРµСЃСЏС†Р°Рј' as analysis_type,
     region,
     CONCAT(order_year, '-', RIGHT('0' + CAST(order_month AS VARCHAR(2)), 2)) as period,
     month_name,
@@ -160,11 +160,36 @@ SELECT
         ELSE NULL
     END as change_percent,
     CASE 
-        WHEN monthly_orders > ISNULL(prev_month_orders, 0) * 1.15 THEN 'Рост'
-        WHEN monthly_orders < ISNULL(prev_month_orders, 0) * 0.85 THEN 'Спад'
-        ELSE 'Стабильно'
+        WHEN monthly_orders > ISNULL(prev_month_orders, 0) * 1.15 THEN 'Р РѕСЃС‚'
+        WHEN monthly_orders < ISNULL(prev_month_orders, 0) * 0.85 THEN 'РЎРїР°Рґ'
+        ELSE 'РЎС‚Р°Р±РёР»СЊРЅРѕ'
     END as trend
 FROM TimeAnalysis
 WHERE order_year = YEAR(GETDATE()) OR (order_year = YEAR(GETDATE()) - 1 AND order_month >= MONTH(GETDATE()))
 ORDER BY region, order_year DESC, order_month DESC;
+GO
+
+
+SELECT 
+    'Г„ГЁГ­Г Г¬ГЁГЄГ  ГЇГ°Г®Г¤Г Г¦ ГЇГ® Г¬ГҐГ±ГїГ¶Г Г¬' as analysis_type,
+    region,
+    CONCAT(order_year, '-', RIGHT('0' + CAST(order_month AS VARCHAR(2)), 2)) as period,
+    month_name,
+    monthly_orders,
+    prev_month_orders,
+    monthly_orders - ISNULL(prev_month_orders, 0) as change,
+    CASE 
+        WHEN prev_month_orders > 0 
+            THEN CAST((monthly_orders - prev_month_orders) * 100.0 / prev_month_orders AS DECIMAL(10,2))
+        ELSE NULL
+    END as change_percent,
+    CASE 
+        WHEN monthly_orders > ISNULL(prev_month_orders, 0) * 1.15 THEN 'ГђГ®Г±ГІ'
+        WHEN monthly_orders < ISNULL(prev_month_orders, 0) * 0.85 THEN 'Г‘ГЇГ Г¤'
+        ELSE 'Г‘ГІГ ГЎГЁГ«ГјГ­Г®'
+    END as trend
+FROM TimeAnalysis
+WHERE order_year = YEAR(GETDATE()) OR (order_year = YEAR(GETDATE()) - 1 AND order_month >= MONTH(GETDATE()))
+ORDER BY region, order_year DESC, order_month DESC;
+
 GO
