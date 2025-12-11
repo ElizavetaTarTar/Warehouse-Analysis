@@ -168,28 +168,3 @@ FROM TimeAnalysis
 WHERE order_year = YEAR(GETDATE()) OR (order_year = YEAR(GETDATE()) - 1 AND order_month >= MONTH(GETDATE()))
 ORDER BY region, order_year DESC, order_month DESC;
 GO
-
-
-SELECT 
-    'Äèíàìèêà ïðîäàæ ïî ìåñÿöàì' as analysis_type,
-    region,
-    CONCAT(order_year, '-', RIGHT('0' + CAST(order_month AS VARCHAR(2)), 2)) as period,
-    month_name,
-    monthly_orders,
-    prev_month_orders,
-    monthly_orders - ISNULL(prev_month_orders, 0) as change,
-    CASE 
-        WHEN prev_month_orders > 0 
-            THEN CAST((monthly_orders - prev_month_orders) * 100.0 / prev_month_orders AS DECIMAL(10,2))
-        ELSE NULL
-    END as change_percent,
-    CASE 
-        WHEN monthly_orders > ISNULL(prev_month_orders, 0) * 1.15 THEN 'Ðîñò'
-        WHEN monthly_orders < ISNULL(prev_month_orders, 0) * 0.85 THEN 'Ñïàä'
-        ELSE 'Ñòàáèëüíî'
-    END as trend
-FROM TimeAnalysis
-WHERE order_year = YEAR(GETDATE()) OR (order_year = YEAR(GETDATE()) - 1 AND order_month >= MONTH(GETDATE()))
-ORDER BY region, order_year DESC, order_month DESC;
-
-GO
